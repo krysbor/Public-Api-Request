@@ -1,5 +1,7 @@
 console.log('js connected')
 const URL = 'https://randomuser.me/api/?results=12'
+let savedData
+let dataSaved = false
 
 const displaySearchMarkup = () => {
     const searchContainer = document.querySelector('.search-container')
@@ -31,6 +33,27 @@ const generateUser = (object) => {
     `
     gallery.appendChild(div1)
 
+    /*Modal
+    const modalDiv = document.createElement('div')
+    modalDiv.className = 'modal-container'
+    modalDiv.innerHTML += `
+        <div class="modal">
+            <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
+            <div class="modal-info-container">
+                <img class="modal-img" src="${object.picture.large}" alt="profile picture">
+                <h3 id="name" class="modal-name cap">${object.name.first}</h3>
+                <p class="modal-text">${object.email}</p>
+                <p class="modal-text cap">${object.location.city}</p>
+                <hr>
+                <p class="modal-text">${object.phone}</p>
+                <p class="modal-text">${object.location.street.number} ${object.location.street.name},
+                ${object.location.state}, ${object.location.postcode}</p>
+                <p class="modal-text">Birthday: ${object.dob.date.slice(0, 10)}</p>
+            </div>
+        </div>
+    `
+    div1.appendChild(modalDiv)
+    */
 }
 
 
@@ -39,6 +62,26 @@ const generateUser = (object) => {
 const getData = (url) => {
     fetch(url)
         .then(response => response.json())
-        .then(data => {data.results.forEach(e => generateUser(e))})
+        .then(data => saveData(data.results))
+        .then(data2 => displayUsers(data2))
 }
+
+const saveData = (data) => {
+    savedData = data
+    dataSaved = true
+    return savedData
+}
+
+const displayUsers = (object) => {
+    object.forEach(e => generateUser(e))
+}
+
 getData(URL)
+
+
+
+/*const closeModalButton = document.querySelector('.modal-close-btn')
+closeModalButton.addEventListener('click', (e) => {
+    const modal = document.querySelector('.modal')
+})
+*/
