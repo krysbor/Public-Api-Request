@@ -1,4 +1,4 @@
-const URL = 'https://randomuser.me/api/?results=12'
+const URL = 'https://randomuser.me/api/?nat=us&results=12'
 /*Stores downloaded data in an array*/
 let savedData = []
 /*Checks if saving has been succesfully completed*/
@@ -15,7 +15,7 @@ const displaySearchMarkup = () => {
     formElement.method = 'get'
     formElement.innerHTML = `
     <input type="search" id="search-input" class="search-input" placeholder="Search...">
-    <input type="submit" value="&#x1F50D;" id="serach-submit" class="search-submit">
+    <input type="submit" value="&#x1F50D;" id="search-submit" class="search-submit">
     `
 }
 displaySearchMarkup()
@@ -50,7 +50,7 @@ const generateUser = (object, id) => {
                 <p class="modal-text">${object.email}</p>
                 <p class="modal-text cap">${object.location.city}</p>
                 <hr>
-                <p class="modal-text">${object.phone}</p>
+                <p class="modal-text">${object.cell}</p>
                 <p class="modal-text">${object.location.street.number} ${object.location.street.name},
                 ${object.location.state}, ${object.location.postcode}</p>
                 <p class="modal-text">Birthday: ${object.dob.date.slice(0, 10)}</p>
@@ -58,7 +58,7 @@ const generateUser = (object, id) => {
         </div>
     `
     modalDiv.style.display = 'none'
-    div1.appendChild(modalDiv)
+    document.body.appendChild(modalDiv)
 
 }
 
@@ -102,8 +102,8 @@ const addListeners = (statement) => {
                     modal.style.display = 'block'
                     modalDisplay = true
                 } else {
-                    modal.style.display = 'none'
-                    modalDisplay = false
+                    /*modal.style.display = 'none'
+                    modalDisplay = false*/
                 }
             })
         })
@@ -113,6 +113,7 @@ const addListeners = (statement) => {
                 const modals = document.querySelectorAll('.modal-container')
                 modals.forEach((e) => {
                     e.style.display = 'none'
+                    modalDisplay = false
                 })
                 e.currentTarget.parentElement.parentElement.style.display = 'none'
 
@@ -123,4 +124,36 @@ const addListeners = (statement) => {
     }
 }
 
+/* looking for users that matches input value*/
+const searchUser = (input) => {
+    const cards = document.querySelectorAll('.card')
+    /*hides all users*/
+    cards.forEach((e) =>{
+        e.style.display = 'none'
+    })
+
+    const names = document.querySelectorAll('.card-name')
+    names.forEach((e) => {
+        if (e.innerHTML.toLocaleLowerCase().includes(input.toLocaleLowerCase())) {
+            console.log('found')
+            e.parentElement.parentElement.style.display = 'flex'
+        }
+    })
+}
+
+const searchListener = () => {
+   const searchInput = document.querySelector('#search-input')
+   const searchButton = document.querySelector('#search-submit')
+   searchButton.addEventListener('click', (e) => {
+        const inputValue = searchInput.value
+        searchUser(inputValue)
+    })
+
+    searchInput.addEventListener('keyup', (e) => {
+        const inputValue = searchInput.value
+        searchUser(inputValue)
+    })
+}
+
 getData(URL)
+searchListener()
