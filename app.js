@@ -1,4 +1,3 @@
-console.log('js connected')
 const URL = 'https://randomuser.me/api/?results=12'
 let savedData
 let dataSaved = false
@@ -26,17 +25,17 @@ const generateUser = (object) => {
             <img class="card-img" src="${object.picture.large}" alt="profile picture">
         </div>
         <div class="card-info-container">
-            <h3 id="name" class="card-name cap">${object.name.first} ${object.name.last} last</h3>
+            <h3 id="name" class="card-name cap">${object.name.first} ${object.name.last}</h3>
             <p class="card-text">${object.email}</p>
             <p class="card-text cap">${object.location.city}, ${object.location.state}</p>
         </div>
     `
     gallery.appendChild(div1)
 
-    /*Modal
+
     const modalDiv = document.createElement('div')
     modalDiv.className = 'modal-container'
-    modalDiv.innerHTML += `
+    modalDiv.innerHTML = `
         <div class="modal">
             <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
             <div class="modal-info-container">
@@ -52,8 +51,9 @@ const generateUser = (object) => {
             </div>
         </div>
     `
+    modalDiv.style.display = 'none'
     div1.appendChild(modalDiv)
-    */
+
 }
 
 
@@ -64,6 +64,7 @@ const getData = (url) => {
         .then(response => response.json())
         .then(data => saveData(data.results))
         .then(data2 => displayUsers(data2))
+        .then(statement => addListeners(statement))
 }
 
 const saveData = (data) => {
@@ -73,9 +74,35 @@ const saveData = (data) => {
 }
 
 const displayUsers = (object) => {
-    object.forEach(e => generateUser(e))
+    object.forEach(element => generateUser(element))
+    return true
 }
 
+const addListeners = (statement) => {
+    if (statement === true) {
+        const div = document.querySelectorAll('.card')
+        div.forEach((elem) =>{
+            elem.addEventListener('click', (e) => {
+                const currentElement = e.currentTarget
+                const modal = currentElement.querySelector('.modal-container')
+                modal.style.display = 'block'
+            })
+        })
+        const closeBtns = document.querySelectorAll('.modal-close-btn')
+        closeBtns.forEach((e) => {
+            e.addEventListener('click', (e) => {
+                const modals = document.querySelectorAll('.modal-container')
+                modals.forEach((e) => {
+                    e.style.display = 'none'
+                })
+                e.currentTarget.parentElement.parentElement.style.display = 'none'
+                console.log(e.currentTarget.parentElement.parentElement)
+            })
+        })
+
+
+    }
+}
 getData(URL)
 
 
