@@ -1,9 +1,12 @@
 const URL = 'https://randomuser.me/api/?results=12'
-/*Stores downloaded data in array*/
+/*Stores downloaded data in an array*/
 let savedData = []
+/*Checks if saving has been succesfully completed*/
 let dataSaved = false
+/*Checks if the modal is currently visible*/
 let modalDisplay = false
 
+/* Displays searchbar*/
 const displaySearchMarkup = () => {
     const searchContainer = document.querySelector('.search-container')
     const formElement = document.createElement('form')
@@ -17,7 +20,7 @@ const displaySearchMarkup = () => {
 }
 displaySearchMarkup()
 
-
+/*generates html for the user card and modal*/
 const generateUser = (object, id) => {
     const gallery = document.querySelector('#gallery')
     const div1 = document.createElement('div')
@@ -61,7 +64,7 @@ const generateUser = (object, id) => {
 
 
 
-/* Downloads data */
+/* gets data */
 const getData = (url) => {
     fetch(url)
         .then(response => response.json())
@@ -70,6 +73,7 @@ const getData = (url) => {
         .then(statement => addListeners(statement))
 }
 
+/*Saves the data to the global variable 'savedData'*/
 const saveData = (data) => {
     data.map((element) => {
         savedData.push(element)
@@ -78,6 +82,7 @@ const saveData = (data) => {
     return savedData
 }
 
+/* generates 12 users*/
 const displayUsers = (array) => {
     for (let i = 0; i < 12; i += 1) {
         generateUser(array[i], i)    }
@@ -92,7 +97,6 @@ const addListeners = (statement) => {
             elem.addEventListener('click', (e) => {
                 const currentElement = e.currentTarget
                 const currentElementId = currentElement.id
-                console.log(currentElementId)
                 const modal = document.querySelector(`.${currentElementId}`)
                 if (modalDisplay === false) {
                     modal.style.display = 'block'
@@ -101,15 +105,11 @@ const addListeners = (statement) => {
                     modal.style.display = 'none'
                     modalDisplay = false
                 }
-
-
-                /*console.log(currentElement.innerHTML + 'clicked')*/
             })
         })
         const closeBtns = document.querySelectorAll('.modal-close-btn')
         closeBtns.forEach((e) => {
             e.addEventListener('click', (e) => {
-                console.log('close clicked')
                 const modals = document.querySelectorAll('.modal-container')
                 modals.forEach((e) => {
                     e.style.display = 'none'
@@ -122,12 +122,5 @@ const addListeners = (statement) => {
 
     }
 }
+
 getData(URL)
-
-
-
-/*const closeModalButton = document.querySelector('.modal-close-btn')
-closeModalButton.addEventListener('click', (e) => {
-    const modal = document.querySelector('.modal')
-})
-*/
