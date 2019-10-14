@@ -1,6 +1,8 @@
 const URL = 'https://randomuser.me/api/?results=12'
-let savedData
+/*Stores downloaded data in array*/
+let savedData = []
 let dataSaved = false
+let modalDisplay = false
 
 const displaySearchMarkup = () => {
     const searchContainer = document.querySelector('.search-container')
@@ -16,10 +18,11 @@ const displaySearchMarkup = () => {
 displaySearchMarkup()
 
 
-const generateUser = (object) => {
+const generateUser = (object, id) => {
     const gallery = document.querySelector('#gallery')
     const div1 = document.createElement('div')
     div1.className = 'card'
+    div1.id = savedData[id].login.username
     div1.innerHTML = `
         <div class="card-img-container">
             <img class="card-img" src="${object.picture.large}" alt="profile picture">
@@ -34,10 +37,10 @@ const generateUser = (object) => {
 
 
     const modalDiv = document.createElement('div')
-    modalDiv.className = 'modal-container'
+    modalDiv.className = 'modal-container' + ' ' + savedData[id].login.username
     modalDiv.innerHTML = `
         <div class="modal">
-            <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
+            <button type="button" id="modal-close-btn" class="modal-close-btn ${savedData[id].login.username + savedData[id].login.username}"><strong>X</strong></button>
             <div class="modal-info-container">
                 <img class="modal-img" src="${object.picture.large}" alt="profile picture">
                 <h3 id="name" class="modal-name cap">${object.name.first}</h3>
@@ -68,13 +71,17 @@ const getData = (url) => {
 }
 
 const saveData = (data) => {
-    savedData = data
+    data.map((element) => {
+        savedData.push(element)
+    })
     dataSaved = true
     return savedData
 }
 
-const displayUsers = (object) => {
-    object.forEach(element => generateUser(element))
+const displayUsers = (array) => {
+    for (let i = 0; i < 12; i += 1) {
+        generateUser(array[i], i)    }
+    /*array.forEach(element => generateUser(element))*/
     return true
 }
 
@@ -84,19 +91,31 @@ const addListeners = (statement) => {
         div.forEach((elem) =>{
             elem.addEventListener('click', (e) => {
                 const currentElement = e.currentTarget
-                const modal = currentElement.querySelector('.modal-container')
-                modal.style.display = 'block'
+                const currentElementId = currentElement.id
+                console.log(currentElementId)
+                const modal = document.querySelector(`.${currentElementId}`)
+                if (modalDisplay === false) {
+                    modal.style.display = 'block'
+                    modalDisplay = true
+                } else {
+                    modal.style.display = 'none'
+                    modalDisplay = false
+                }
+
+
+                /*console.log(currentElement.innerHTML + 'clicked')*/
             })
         })
         const closeBtns = document.querySelectorAll('.modal-close-btn')
         closeBtns.forEach((e) => {
             e.addEventListener('click', (e) => {
+                console.log('close clicked')
                 const modals = document.querySelectorAll('.modal-container')
                 modals.forEach((e) => {
                     e.style.display = 'none'
                 })
                 e.currentTarget.parentElement.parentElement.style.display = 'none'
-                console.log(e.currentTarget.parentElement.parentElement)
+
             })
         })
 
